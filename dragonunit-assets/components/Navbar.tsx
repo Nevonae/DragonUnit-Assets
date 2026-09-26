@@ -279,7 +279,17 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {profile ? (
             <>
-              <span className="text-sm font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
+              <Link
+                href="/dashboard"
+                aria-current={pathname.startsWith("/dashboard") ? "page" : undefined}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#8B5CF6]/15 active:translate-y-0 active:scale-95 ${
+                  pathname.startsWith("/dashboard")
+                    ? "border-[#8B5CF6]/60 bg-[#8B5CF6]/10 text-[#F5F7FA]"
+                    : "border-[#252A35] bg-[#10131A] text-[#F5F7FA] hover:border-[#8B5CF6]/60"
+                }`}
+              >
+                Dashboard
+              </Link>
               <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
                 ...current,
                 name: values.displayName,
@@ -329,7 +339,18 @@ export function Navbar() {
             })}
             {profile ? (
               <div className="flex items-center justify-end gap-3">
-                <span className="text-xs font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
+                <Link
+                  href="/dashboard"
+                  aria-current={pathname.startsWith("/dashboard") ? "page" : undefined}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex-1 rounded-full border px-4 py-2 text-center text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#8B5CF6]/15 active:translate-y-0 active:scale-95 ${
+                    pathname.startsWith("/dashboard")
+                      ? "border-[#8B5CF6]/60 bg-[#8B5CF6]/10 text-[#F5F7FA]"
+                      : "border-[#252A35] bg-[#10131A] text-[#F5F7FA] hover:border-[#8B5CF6]/60"
+                  }`}
+                >
+                  Dashboard
+                </Link>
                 <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
                   ...current,
                   name: values.displayName,
