@@ -10,20 +10,24 @@ export default function AdminPage() {
         <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
           <AdminSidebar />
           <section className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div id="overview" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {[
                 ["Total Members", "0"],
                 ["Total Assets", "0"],
                 ["Total Downloads", "0"],
                 ["Total Views", "0"],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-2xl border border-[#252A35] bg-[#10131A] p-5">
+                <div
+                  key={label}
+                  id={label === "Total Downloads" ? "downloads" : undefined}
+                  className="scroll-mt-24 rounded-2xl border border-[#252A35] bg-[#10131A] p-5"
+                >
                   <p className="text-xs uppercase tracking-[0.2em] text-[#9AA1AE]">{label}</p>
                   <p className="mt-5 text-3xl font-semibold text-[#F5F7FA]">{value}</p>
                 </div>
               ))}
             </div>
-            <div className="rounded-2xl border border-[#252A35] bg-[#10131A] p-6">
+            <div id="assets" className="scroll-mt-24 rounded-2xl border border-[#252A35] bg-[#10131A] p-6">
               <h2 className="text-xl font-semibold text-[#F5F7FA]">Asset management</h2>
               <div className="mt-6 overflow-hidden rounded-xl border border-[#252A35]">
                 <table className="min-w-full text-left text-sm text-[#9AA1AE]">
