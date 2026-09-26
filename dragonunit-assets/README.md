@@ -30,11 +30,11 @@ ADMIN_ACCESS_KEY=
 1. Create a Supabase project
 2. Run the SQL in `supabase/schema.sql`
 3. Run `supabase/avatars.sql` to create the public profile image bucket with user-scoped upload policies
-4. Create a private storage bucket named `assets`
+4. Run `supabase/assets.sql` to create the private `assets` bucket and restrict storage-object writes to admins and owners
 5. Configure row-level security and auth providers
 6. Set Google and Discord OAuth providers
 
-For an existing project, run `supabase/avatars.sql` and `supabase/wishlist.sql` in the Supabase SQL Editor to configure avatar uploads and the user-scoped wishlist.
+For an existing project, run `supabase/avatars.sql`, `supabase/assets.sql`, and `supabase/wishlist.sql` in the Supabase SQL Editor to configure profile images, admin-only asset storage writes, and the user-scoped wishlist.
 
 ## Google OAuth setup
 
@@ -93,7 +93,7 @@ For a personal, non-commercial site, the simplest workflow is GitHub connected t
 2. In Vercel, choose **Add New Project**, import the GitHub repository, and deploy the `main` branch with the default Next.js settings.
 3. In Vercel Project Settings → Environment Variables, add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`, and `ADMIN_ACCESS_KEY`. Set `NEXT_PUBLIC_SITE_URL` to the deployed production URL. `ADMIN_ACCESS_KEY` must be a random server-side secret of at least 32 characters.
 4. In Supabase Auth → URL Configuration, set the Site URL to your production URL and add `https://<your-production-domain>/auth/callback` to the allowed redirect URLs. Keep the local callback URL for development.
-5. Run `supabase/schema.sql`, `supabase/avatars.sql`, `supabase/wishlist.sql`, and `supabase/admin-promotion.sql` in the Supabase SQL Editor if the corresponding schema has not already been installed. Create the `assets` bucket as private.
+5. Run `supabase/schema.sql`, `supabase/avatars.sql`, `supabase/assets.sql`, `supabase/wishlist.sql`, and `supabase/admin-promotion.sql` in the Supabase SQL Editor if the corresponding schema has not already been installed.
 6. Redeploy after changing environment variables.
 
 After connecting GitHub, every push to `main` automatically triggers a production deployment; pushes to other branches create previews. Saving a file in VS Code alone does not publish it. To publish an edit, commit and push it:
@@ -108,6 +108,8 @@ git push
 
 The private `assets` bucket must remain private. The current `/api/assets/view` and `/api/assets/download` routes are authentication-checked placeholders; they do not yet return signed URLs or record completed downloads. Implement and test those flows before enabling real asset delivery to users.
 
+The `/admin/upload` screen is currently a UI placeholder; its form does not yet upload files. The database insert policy and `supabase/assets.sql` Storage policies restrict asset records and asset objects to `admin` and `owner` roles when the SQL setup has been applied.
+
 ## Important security notes
 
 - Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser
@@ -118,7 +120,7 @@ The private `assets` bucket must remain private. The current `/api/assets/view` 
 
 ## Database SQL
 
-Review `supabase/schema.sql` for the database tables, indexes, RLS rules, and trigger logic. Existing projects can apply avatar, wishlist, and profile-role grant changes with `supabase/avatars.sql`, `supabase/wishlist.sql`, and `supabase/admin-promotion.sql`.
+Review `supabase/schema.sql` for the database tables, indexes, RLS rules, and trigger logic. Existing projects can apply storage and access changes with `supabase/avatars.sql`, `supabase/assets.sql`, `supabase/wishlist.sql`, and `supabase/admin-promotion.sql`.
 
 ## Backend Documentation
 

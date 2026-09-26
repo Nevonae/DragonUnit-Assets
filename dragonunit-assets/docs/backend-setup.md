@@ -61,7 +61,9 @@ Run `supabase/avatars.sql`. It creates the public `avatars` bucket with a 5 MB l
 
 ### Asset files
 
-Create a private Storage bucket named `assets` in the Supabase dashboard. Keep it private. The current `schema.sql` configures row-level security for asset metadata, but it does not configure `storage.objects` policies for this bucket, and the view/download API handlers are placeholders. Until both are implemented, private asset upload, preview, and download are not complete end-to-end flows.
+Run `supabase/assets.sql` to create the private `assets` bucket and apply Storage object policies. Only authenticated users whose `profiles.role` is `admin` or `owner` can select, upload, update, or delete objects in that bucket. `schema.sql` also restricts asset-row inserts, updates, and deletes to those roles.
+
+The `/admin/upload` page currently contains an unconnected form, so actual file upload is not implemented yet. The RLS policies are the server-side protection that a future upload form/API must use; do not treat the placeholder form as a working upload flow. The asset view/download API handlers are also placeholders and do not yet return signed URLs.
 
 Never send the Supabase service-role key to a browser. User-facing operations should use the session client and RLS. The current code does not read `SUPABASE_SERVICE_ROLE_KEY`.
 
@@ -71,13 +73,14 @@ Never send the Supabase service-role key to a browser. User-facing operations sh
 
 1. Run `supabase/schema.sql` once to create profiles, assets, download events, wishlist data, indexes, triggers, table RLS policies, and restricted profile column grants.
 2. Run `supabase/avatars.sql` to configure profile image storage and its policies.
-3. Create the private `assets` storage bucket separately in the Supabase dashboard.
+3. Run `supabase/assets.sql` to create the private bucket and admin/owner-only Storage policies.
 4. Configure Auth providers and URL allowlists.
 5. Promote the initial owner using the SQL above; members can request admin promotion with `ADMIN_ACCESS_KEY` after the incremental grants migration is applied.
 
 `schema.sql` is intended for a new project. Its policies and trigger are not fully idempotent; do not rerun the whole file on an existing installation. For incremental setup, use the focused scripts:
 
 - `supabase/avatars.sql` configures the profile image bucket and policies.
+- `supabase/assets.sql` creates the private asset bucket and limits object access to admins and owners.
 - `supabase/wishlist.sql` adds the wishlist table and user-owned RLS policies.
 - `supabase/admin-promotion.sql` revokes browser `UPDATE` on `profiles.role` while preserving the limited profile-field grants. Run this on existing installations before enabling self-service promotion.
 
