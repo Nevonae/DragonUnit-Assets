@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const configuredKey = process.env.ADMIN_ACCESS_KEY;
   if (!configuredKey || Buffer.byteLength(configuredKey) < 32) {
     return NextResponse.json(
-      { error: "Admin promotion is not configured. Contact the site owner." },
+      { error: "Admin promotion requires a server-side ADMIN_ACCESS_KEY of at least 32 characters." },
       { status: 503 },
     );
   }
