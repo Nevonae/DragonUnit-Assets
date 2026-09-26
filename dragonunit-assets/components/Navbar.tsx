@@ -278,13 +278,16 @@ export function Navbar() {
 
         <div className="hidden items-center gap-3 md:flex">
           {profile ? (
-            <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
-              ...current,
-              name: values.displayName,
-              bio: values.bio,
-              avatarUrl: values.avatarUrl,
-              bannerUrl: values.bannerUrl,
-            } : current)} />
+            <>
+              <span className="text-sm font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
+              <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
+                ...current,
+                name: values.displayName,
+                bio: values.bio,
+                avatarUrl: values.avatarUrl,
+                bannerUrl: values.bannerUrl,
+              } : current)} />
+            </>
           ) : (
             <>
               <Link href="/login" className="text-sm font-medium text-[#9AA1AE] transition hover:text-[#F5F7FA]">
@@ -325,7 +328,8 @@ export function Navbar() {
               );
             })}
             {profile ? (
-              <div className="flex justify-end">
+              <div className="flex items-center justify-end gap-3">
+                <span className="text-xs font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
                 <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
                   ...current,
                   name: values.displayName,

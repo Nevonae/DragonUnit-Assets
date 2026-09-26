@@ -279,9 +279,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {profile ? (
             <>
-              <Link href="/dashboard" aria-current={pathname.startsWith("/dashboard") ? "page" : undefined} className={`rounded-full border px-4 py-2 text-sm font-medium transition ${pathname.startsWith("/dashboard") ? "border-[#8B5CF6]/60 bg-[#8B5CF6]/10 text-[#F5F7FA]" : "border-[#252A35] bg-[#10131A] text-[#F5F7FA] hover:border-[#8B5CF6]/60"}`}>
-                Dashboard
-              </Link>
+              <span className="text-sm font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
               <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
                 ...current,
                 name: values.displayName,
@@ -331,9 +329,7 @@ export function Navbar() {
             })}
             {profile ? (
               <div className="flex items-center gap-3">
-                <Link href="/dashboard" className="flex-1 rounded-full border border-[#252A35] bg-[#10131A] px-4 py-2 text-center text-sm font-medium text-[#F5F7FA]">
-                  Dashboard
-                </Link>
+                <span className="flex-1 text-right text-xs font-medium text-[#9AA1AE]">Web Developer Nevonae</span>
                 <ProfileMenu profile={profile} onSaved={(values) => setProfile((current) => current ? {
                   ...current,
                   name: values.displayName,
