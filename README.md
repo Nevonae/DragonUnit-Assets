@@ -73,7 +73,7 @@ SET role = 'admin'
 WHERE id = 'USER_UUID';
 ```
 
-Admin access is available from the shared login page and Password and security page. An authenticated member can enter `ADMIN_ACCESS_KEY` to promote only their own profile to `admin`; existing `admin` and `owner` accounts can use the key to establish admin access. Configure a unique random value of at least 32 characters in `.env.local` and in your deployment's server-side environment; never expose it with a `NEXT_PUBLIC_` prefix.
+Admin access is available from the shared login page, `/admin/register`, and Password and security page. An authenticated member can enter `ADMIN_ACCESS_KEY` to promote only their own profile to `admin`; existing `admin` and `owner` accounts can use the key to establish admin access. Configure a unique random value of at least 32 characters in `.env.local` and in your deployment's server-side environment; never expose it with a `NEXT_PUBLIC_` prefix.
 
 Generate a key locally with:
 

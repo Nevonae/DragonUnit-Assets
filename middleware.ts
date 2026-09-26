@@ -44,20 +44,15 @@ export async function middleware(request: NextRequest) {
             return request.cookies.getAll();
           },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value),
-            );
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
             response = NextResponse.next({ request });
-            cookiesToSet.forEach(({ name, value, options }) =>
-              response.cookies.set(name, value, options),
-            );
+            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
           },
         },
       },
     );
 
     const { data: { user } } = await supabase.auth.getUser();
-
     if (!user) {
       const loginUrl = new URL(isAdminRoute ? "/admin/login" : "/login", request.url);
       return NextResponse.redirect(loginUrl);

@@ -5,6 +5,7 @@
 The app uses Supabase Auth with the Supabase SSR cookie client. The browser uses the publishable/anon key; authenticated server routes read the user from the session cookie.
 
 - `/login` supports email/password, registration, Google, and Discord.
+- `/admin/register` creates an account and submits the admin key to the existing server-side activation endpoint. If email confirmation is enabled, the callback returns to an authenticated activation step; it does not promote the profile until the server verifies the key.
 - Signed-in members can request promotion from **Password and security → Activate Admin** by entering the site admin key.
 - Successful member login and OAuth return to `/`.
 - Email confirmation uses `/auth/callback`; the allowed redirect URL must include `http://localhost:3000/auth/callback` and the production equivalent in Supabase Auth URL Configuration.

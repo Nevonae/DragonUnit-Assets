@@ -375,6 +375,15 @@ function LoginForm() {
               )}
             </div>}
 
+            {isAdminMode && (
+              <p className="mt-6 text-center text-sm text-gray-400">
+                Need an admin account?{" "}
+                <Link href="/admin/register" className="font-medium text-purple-400 hover:text-purple-300">
+                  Register here
+                </Link>
+              </p>
+            )}
+
             {/* Back to home */}
             <div className="mt-6 text-center">
               <Link
