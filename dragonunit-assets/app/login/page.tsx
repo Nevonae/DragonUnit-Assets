@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { Suspense, type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Globe,
   MessageSquareText,
@@ -17,11 +18,13 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isAdminMode = searchParams.get("mode") === "admin";
   const supabase = createClient();
 
   const [isRegister, setIsRegister] = useState(false);
-  const [isAdminMode, setIsAdminMode] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [adminAccessKey, setAdminAccessKey] = useState("");
@@ -32,13 +35,11 @@ export default function LoginPage() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const adminMode = new URLSearchParams(window.location.search).get("mode") === "admin";
-    setIsAdminMode(adminMode);
-    if (!adminMode) void fetch("/api/admin/revoke-key", { method: "POST" });
-  }, []);
+    if (!isAdminMode) void fetch("/api/admin/revoke-key", { method: "POST" });
+  }, [isAdminMode]);
 
   function switchMode(adminMode: boolean) {
-    setIsAdminMode(adminMode);
+    router.replace(adminMode ? "/login?mode=admin" : "/login", { scroll: false });
     setIsRegister(false);
     setError("");
     setSuccess("");
@@ -72,7 +73,7 @@ export default function LoginPage() {
         }
 
         if (data.session) {
-          window.location.href = "/";
+          router.push("/");
           return;
         }
 
@@ -104,11 +105,11 @@ export default function LoginPage() {
             return;
           }
 
-          window.location.href = "/admin";
+          router.push("/admin");
           return;
         }
 
-        window.location.href = "/";
+        router.push("/");
       }
     } catch (err) {
       console.error(err);
@@ -190,12 +191,10 @@ export default function LoginPage() {
 
               <p className="mt-2 text-sm text-gray-400">
                 {isAdminMode
-                  ? "Sign in with an administrator account and enter your access key."
+                  ? "Sign in with your account and enter the access key to activate admin access."
                   : isRegister
                   ? "Join DragonUnit Assets and start exploring."
-                  : isAdminMode
-                    ? "Sign in with your member account and enter the admin key to activate administrator access."
-                    : "Sign in to access DragonUnit Assets."}
+                  : "Sign in to access DragonUnit Assets."}
               </p>
             </div>
 
@@ -234,15 +233,17 @@ export default function LoginPage() {
 
               {isRegister && !isAdminMode && (
                 <div>
-                  <label className="mb-2 block text-sm text-gray-300">
+                  <label htmlFor="display-name" className="mb-2 block text-sm text-gray-300">
                     Display name
                   </label>
 
                   <input
+                    id="display-name"
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Your name"
+                    autoComplete="name"
                     required
                     className="w-full rounded-xl border border-white/10 bg-[#0D0F15] px-4 py-3 text-white outline-none transition placeholder:text-gray-600 focus:border-purple-500"
                   />
@@ -250,7 +251,7 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label className="mb-2 block text-sm text-gray-300">
+                <label htmlFor="email" className="mb-2 block text-sm text-gray-300">
                   Email
                 </label>
 
@@ -258,10 +259,12 @@ export default function LoginPage() {
                   <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
 
                   <input
+                    id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
+                    autoComplete="email"
                     required
                     className="w-full rounded-xl border border-white/10 bg-[#0D0F15] py-3 pl-12 pr-4 text-white outline-none transition placeholder:text-gray-600 focus:border-purple-500"
                   />
@@ -289,7 +292,7 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label className="mb-2 block text-sm text-gray-300">
+                <label htmlFor="password" className="mb-2 block text-sm text-gray-300">
                   Password
                 </label>
 
@@ -297,10 +300,12 @@ export default function LoginPage() {
                   <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
 
                   <input
+                    id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
+                    autoComplete={isRegister ? "new-password" : "current-password"}
                     required
                     minLength={6}
                     className="w-full rounded-xl border border-white/10 bg-[#0D0F15] py-3 pl-12 pr-4 text-white outline-none transition placeholder:text-gray-600 focus:border-purple-500"
@@ -310,14 +315,14 @@ export default function LoginPage() {
 
               {/* Error */}
               {error && (
-                <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                <div role="alert" className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
                   {error}
                 </div>
               )}
 
               {/* Success */}
               {success && (
-                <div className="rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+                <div role="status" aria-live="polite" className="rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-300">
                   {success}
                 </div>
               )}
@@ -354,7 +359,7 @@ export default function LoginPage() {
                 </>
               ) : (
                 <>
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <button
                     type="button"
                     onClick={() => {
@@ -385,5 +390,19 @@ export default function LoginPage() {
 
       <Footer />
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="grid min-h-[calc(100vh-160px)] place-items-center px-4">
+          <p role="status" className="text-sm text-gray-400">Loading sign-in...</p>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
