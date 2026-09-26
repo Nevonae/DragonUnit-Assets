@@ -76,7 +76,7 @@ function RegistrationForm() {
       }
 
       if (!data.session) {
-        setMessage("Account created. Confirm your email using the link we sent; you will return here to activate admin access.");
+        router.push("/admin/register/check-email");
         return;
       }
 

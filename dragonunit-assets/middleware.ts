@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
   const isAdminLogin = pathname === "/admin/login";
-  const isAdminRegister = pathname === "/admin/register";
+  const isAdminRegister = pathname === "/admin/register" || pathname.startsWith("/admin/register/");
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
   if ((isDashboardRoute || isAdminRoute) && !isAdminLogin && !isAdminRegister) {
