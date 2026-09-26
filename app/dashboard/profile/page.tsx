@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, Download, Heart, ShieldCheck } from "lucide-react";
+import { CalendarDays, ShieldCheck } from "lucide-react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { ProfileActions } from "@/components/ProfileActions";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -20,12 +20,17 @@ export default async function ProfilePage() {
 
   if (!user) redirect("/login");
 
-  const [profileResult, downloadsResult, wishlistResult] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("display_name, role, created_at")
-      .eq("id", user.id)
-      .maybeSingle(),
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("display_name, role, created_at")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!profileError && profile && ["admin", "owner"].includes(profile.role)) {
+    redirect("/admin");
+  }
+
+  const [downloadsResult, wishlistResult] = await Promise.all([
     supabase
       .from("download_events")
       .select("id, created_at, assets(title, category, file_size)", { count: "exact" })
@@ -38,7 +43,6 @@ export default async function ProfilePage() {
       .eq("user_id", user.id),
   ]);
 
-  const profile = profileResult.data;
   const displayName = user.user_metadata?.display_name ?? user.user_metadata?.full_name ?? profile?.display_name ?? "Member";
   const bio = user.user_metadata?.bio ?? "";
   const avatarUrl = user.user_metadata?.avatar_url ?? user.user_metadata?.picture ?? "";
